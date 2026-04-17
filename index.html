@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Spin the Wheel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<h1>Spin the Wheel</h1>
+<p class="subtitle">Who gets picked today?</p>
+<div class="layout">
+  <div class="wheel-side">
+    <div class="wheel-wrapper">
+      <canvas id="wheel" width="400" height="400"></canvas>
+      <div class="pointer">
+        <svg width="28" height="28" viewBox="0 0 28 28">
+          <polygon points="28,14 6,3 10,14 6,25" fill="#f5c518"/>
+        </svg>
+      </div>
+      <div class="cap" id="capBtn">SPIN</div>
+    </div>
+    <div class="speed-bar-wrap">
+      <span class="speed-label">Speed</span>
+      <div class="speed-track"><div class="speed-fill" id="speedFill"></div></div>
+    </div>
+    <div id="result" class="hidden"></div>
+    <p class="spin-hint">
+      Press <kbd>Space</kbd> repeatedly to speed up<br>
+      Click <kbd>Spin!</kbd> or the center cap to boost
+    </p>
+  </div>
+  <div class="panel">
+    <div class="panel-header">
+      <h2>Participants</h2>
+      <div class="toggle-row">
+        <span>Show Images</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="imgToggle"/>
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </label>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table id="participantTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th class="img-col" style="display:none">Image URL</th>
+            <th style="width:40px"></th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <button class="add-row-btn" id="addRowBtn" type="button"><span>+</span> Add participant</button>
+    </div>
+    <div class="count" id="count">0 participants</div>
+    <div class="panel-row">
+      <button id="spinBtn" type="button">Spin!</button>
+      <button class="secondary" id="clearHistoryBtn" type="button">Clear History</button>
+    </div>
+    <p class="history-title">Recent Picks</p>
+    <ul id="history-list"></ul>
+  </div>
+</div>
+<div id="modal">
+  <div class="modal-box">
+    <img class="modal-avatar" id="modal-avatar" src="" alt=""/>
+    <div class="modal-emoji" id="modal-emoji">🎉</div>
+    <p class="modal-label">Winner is</p>
+    <div class="modal-winner" id="modal-winner"></div>
+    <button class="modal-btn" id="modal-close" type="button">Spin Again</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+
+<footer>
+  <a href="https://github.com/vjay114" target="_blank" rel="noopener" class="footer-link">
+    <img src="favicon-32x32.png" alt="Jaypro logo" class="footer-logo"/>
+    <span class="footer-text">Created by <strong>Jaypro</strong></span>
+    <span class="footer-gh">github/vjay114 &#8599;</span>
+  </a>
+</footer>
+
+
+</body>
+</html>
