@@ -10,6 +10,13 @@
 
 ---
 
+## 🌐 Live Demo
+
+No setup needed — try it instantly:
+
+👉 https://jay-spin-the-wheel.vercel.app/
+
+---
 ## ✨ Features
 
 | Feature | Description |
@@ -116,7 +123,7 @@ Contributions, issues, and feature requests are welcome!
 This project is open source and available under the [MIT License](LICENSE).
 
 ---
-
+[![Live Demo](https://img.shields.io/badge/demo-live-green?style=flat&logo=vercel)](https://jay-spin-the-wheel.vercel.app/)
 <div align="center">
 
 Made with ❤️ by **[Jaypro](https://github.com/vjay114)**
