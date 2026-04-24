@@ -148,11 +148,95 @@
     rafId = requestAnimationFrame(loop);
   }
 
+  // ── Sound Engine (Web Audio API) ──
+  var audioCtx = null;
+  var tickInterval = null;
+
+  function getAudioCtx() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    return audioCtx;
+  }
+
+  function playTick(vel) {
+    try {
+      var ac = getAudioCtx();
+      var osc = ac.createOscillator(), gain = ac.createGain();
+      osc.connect(gain); gain.connect(ac.destination);
+      osc.frequency.setValueAtTime(180 + (vel / MAX_VEL) * 700, ac.currentTime);
+      osc.type = 'triangle';
+      gain.gain.setValueAtTime(0.15, ac.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.055);
+      osc.start(ac.currentTime); osc.stop(ac.currentTime + 0.06);
+    } catch(e) {}
+  }
+
+  function playBoostWhoosh() {
+    try {
+      var ac = getAudioCtx();
+      var osc = ac.createOscillator(), gain = ac.createGain();
+      osc.connect(gain); gain.connect(ac.destination);
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(80, ac.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(420, ac.currentTime + 0.14);
+      gain.gain.setValueAtTime(0.22, ac.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.18);
+      osc.start(ac.currentTime); osc.stop(ac.currentTime + 0.2);
+    } catch(e) {}
+  }
+
+  function playWinnerFanfare() {
+    try {
+      var ac = getAudioCtx();
+      // Rising chord: C5 E5 G5 C6
+      [523, 659, 784, 1047].forEach(function(freq, i) {
+        var osc = ac.createOscillator(), gain = ac.createGain();
+        osc.connect(gain); gain.connect(ac.destination);
+        osc.type = 'sine'; osc.frequency.value = freq;
+        var t = ac.currentTime + i * 0.12;
+        gain.gain.setValueAtTime(0, t);
+        gain.gain.linearRampToValueAtTime(0.25, t + 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+        osc.start(t); osc.stop(t + 0.45);
+      });
+      // Sparkle shimmer after
+      setTimeout(function() {
+        try {
+          var ac2 = getAudioCtx();
+          [1200, 1600, 2000].forEach(function(freq, i) {
+            var o = ac2.createOscillator(), g = ac2.createGain();
+            o.connect(g); g.connect(ac2.destination);
+            o.type = 'sine'; o.frequency.value = freq;
+            var t = ac2.currentTime + i * 0.07;
+            g.gain.setValueAtTime(0.1, t);
+            g.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+            o.start(t); o.stop(t + 0.25);
+          });
+        } catch(e) {}
+      }, 500);
+    } catch(e) {}
+  }
+
+  function startTickScheduler() {
+    if (tickInterval) return;
+    tickInterval = setInterval(function() {
+      if (velocity > STOP_VEL) {
+        // tick probability rises with speed for realistic ratchet effect
+        var chance = 0.15 + (velocity / MAX_VEL) * 0.85;
+        if (Math.random() < chance) playTick(velocity);
+      } else {
+        clearInterval(tickInterval);
+        tickInterval = null;
+      }
+    }, 38);
+  }
+
   function boost() {
     if (participants.length === 0) return;
     document.getElementById('result').className = 'hidden';
     velocity = Math.min(velocity + BOOST, MAX_VEL);
     updateSpeedBar();
+    playBoostWhoosh();
+    startTickScheduler();
     startLoop();
   }
 
@@ -171,6 +255,8 @@
     spinCount++;
     spinHistory.unshift({ n: spinCount, name: p.name, url: p.url });
     if (spinHistory.length > 8) spinHistory.pop();
+
+    playWinnerFanfare();
 
     var r = document.getElementById('result');
     r.textContent = 'Winner: ' + p.name; r.className = 'show';
